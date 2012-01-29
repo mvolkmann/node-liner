@@ -18,9 +18,7 @@ more complicated than they need to be.
       }
     });
 
-## Demo
+To run the example above:
 
-To run a demo,
-
-    cd test
-    node demo.js
+    cd examples
+    node example.js
