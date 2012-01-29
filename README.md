@@ -1,4 +1,4 @@
-# node-lines
+# node-liner
 
 This is a simple Node.js module that reads lines from files and streams.
 There are other similar modules, but I believe they are
@@ -6,9 +6,9 @@ more complicated than they need to be.
 
 ## Example
 
-    var lines = require('lines');
+    var liner = require('liner');
 
-    lines.fromPath('./story.txt', function (err, line) {
+    liner.fromPath('./story.txt', function (err, line) {
       if (err) {
         console.error(err);
       } else if (line === null) {

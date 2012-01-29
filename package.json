@@ -1,13 +1,13 @@
 {
   "author": "R. Mark Volkmann <r.mark.volkmann@gmail.com> (http://ociweb.com/mark/)",
-  "name": "lines",
-  "description": "This is a simple module for reading lines from files and streams.",
+  "name": "liner",
+  "description": "This is a simple Node.js module that reads lines from files and streams.",
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "git@github.com:mvolkmann/node-lines.git"
+    "url": "git@github.com:mvolkmann/node-liner.git"
   },
-  "main": "lib/lines.js",
+  "main": "lib/liner.js",
   "engines": {
     "node": "~0.6"
   },

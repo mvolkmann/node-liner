@@ -1,7 +1,7 @@
 'use strict';
-var lines = require('../lib/lines');
+var liner = require('../lib/liner');
 
-lines.fromPath('./story.txt', function (err, line) {
+liner.fromPath('./story.txt', function (err, line) {
   if (err) {
     console.error(err);
   } else if (line === null) {
