@@ -5,14 +5,14 @@ exports.testFromPath = function (t) {
   var lines = [];
   liner.fromPath('../story.txt', function (err, line) {
     if (err) {
-      t.ok(false, err);
+      t.ifError(err);
     } else if (line === null) {
       var len = lines.length;
-      t.ok(len === 25, 'number of lines read');
-      t.ok(lines[0] ===
+      t.equal(len, 25, 'number of lines read');
+      t.equal(lines[0],
         'Come and listen to a story about a man named Jed',
         'first line');
-      t.ok(lines[len - 1] === "Y'all come back now, y'hear?.",
+      t.equal(lines[len - 1], "Y'all come back now, y'hear?.",
         'last line');
       t.done();
     } else {
