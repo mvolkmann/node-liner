@@ -8,6 +8,7 @@
     "url": "git://github.com/mvolkmann/node-liner.git"
   },
   "main": "lib/liner.js",
+  "scripts":{"test": "cd test; nodeunit liner.test.js"},
   "engines": {
     "node": "~0.6"
   },
