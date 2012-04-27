@@ -1,5 +1,5 @@
 'use strict';
-var Liner = require('../lib/liner.js');
+var Liner = require('../index.js');
 
 function compareLines(t, lines) {
   var len = lines.length;
