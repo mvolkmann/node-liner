@@ -1,5 +1,5 @@
 'use strict';
-var Liner = require('../index.js');
+var Liner = require('index.js');
 
 /*
 liner.fromPath('../story.txt', function (err, line) {
@@ -13,7 +13,7 @@ liner.fromPath('../story.txt', function (err, line) {
 });
 */
 
-var liner = new Liner('../story.txt');
+var liner = new Liner('story.txt');
 liner.on('data', function (line) {
   console.log(line);
 });
