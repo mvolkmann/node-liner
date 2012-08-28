@@ -15,8 +15,9 @@ var NEWLINE = process.platform === 'win32' ? '\r\n' : '\n';
  */
 function fromStream(readStream, cb) {
   var leftover = '';
+  /*jshint validthis: true */
   var that = this;
- 
+
   readStream.on('data', function (buffer) {
     var lines = buffer.toString().split(NEWLINE);
     lines[0] = leftover + lines[0];
@@ -72,6 +73,7 @@ function fromPath(filePath, bufferSize, cb) {
     bufferSize = 512;
   }
   var rs = fs.createReadStream(filePath, {bufferSize: bufferSize});
+  /*jshint validthis: true */
   fromStream.bind(this, rs, cb)();
 }
 

@@ -8,19 +8,18 @@ more complicated than they need to be.
 
 ## Example
 
-    var liner = require('liner');
-
-    liner.fromPath('./story.txt', function (err, line) {
-      if (err) {
-        console.error(err);
-      } else if (line === null) {
-        console.log('EOF');
-      } else {
-        console.log(line);
-      }
+    var Liner = require('liner');
+    var liner = new Liner('./story.txt');
+    liner.on('data', function (line) {
+      console.log(line);
+    });
+    liner.on('err', function (err) {
+      console.error(err);
+    });
+    liner.on('end', function () {
+      process.exit(0);
     });
 
 To run the example above:
 
-    cd examples
     node example.js
