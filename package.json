@@ -2,7 +2,7 @@
   "author": "R. Mark Volkmann <r.mark.volkmann@gmail.com> (http://ociweb.com/mark/)",
   "name": "liner",
   "description": "This is a simple Node.js module that reads lines from files and streams.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "repository": {
     "type": "git",
     "url": "git://github.com/mvolkmann/node-liner.git"
