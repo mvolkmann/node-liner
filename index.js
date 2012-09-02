@@ -1,10 +1,8 @@
 'use strict';
 var fs = require('fs');
+var os = require('os');
 var Stream = require('stream');
 var util = require('util');
-
-var NEWLINE = process.platform === 'win32' ? '\r\n' : '\n';
-// could also split on this RegExp: /\r\n|\r|\n/
 
 /**
  * Reads lines from a given ReadStream.
@@ -19,7 +17,7 @@ function fromStream(readStream, cb) {
   var that = this;
 
   readStream.on('data', function (buffer) {
-    var lines = buffer.toString().split(NEWLINE);
+    var lines = buffer.toString().split(os.EOL);
     lines[0] = leftover + lines[0];
     leftover = lines.pop();
     lines.forEach(function (line) {
