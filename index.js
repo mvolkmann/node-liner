@@ -5,15 +5,37 @@ var Stream = require('stream');
 var util = require('util');
 
 /**
+ * @param source a string file path or a stream
+ */
+function Liner(source, bufferSize) {
+  Stream.call(this);
+
+  if (typeof source === 'string') {
+    this.fromPath(source, bufferSize);
+  } else {
+    this.fromStream(source);
+  }
+}
+util.inherits(Liner, Stream);
+
+/**
+ * Reads lines from a given file path.
+ * @param filePath the file path
+ * @param bufferSize the buffer size used to read the file
+ *   (optional; defaults to 512)
+ */
+Liner.prototype.fromPath = function (filePath, bufferSize) {
+  bufferSize = bufferSize || 512;
+  var rs = fs.createReadStream(filePath, {bufferSize: bufferSize});
+  this.fromStream(rs);
+};
+
+/**
  * Reads lines from a given ReadStream.
  * @param readStream the ReadStream
- * @param cb callback that is passed an error description, if any,
- *   and a line or null if the end of the stream is reached;
- *   omit to use as a stream
  */
-function fromStream(readStream, cb) {
+Liner.prototype.fromStream = function (readStream) {
   var leftover = '';
-  /*jshint validthis: true */
   var that = this;
 
   readStream.on('data', function (buffer) {
@@ -21,67 +43,23 @@ function fromStream(readStream, cb) {
     lines[0] = leftover + lines[0];
     leftover = lines.pop();
     lines.forEach(function (line) {
-      if (cb) {
-        cb(null, line);
-      } else {
-        that.emit('data', line);
-      }
+      that.emit('data', line);
     });
   });
 
   readStream.on('end', function () {
     if (leftover.length > 0) {
-      if (cb) {
-        cb(null, leftover);
-      } else {
-        that.emit('data', leftover);
-      }
+      that.emit('data', leftover);
     }
   });
 
   readStream.on('error', function (err) {
-    if (cb) {
-      cb(err);
-    } else {
-      that.emit('error', err);
-    }
+    that.emit('error', err);
   });
 
   readStream.on('close', function (err) {
-    if (cb) {
-      cb(null, null);
-    } else {
-      that.emit('end');
-    }
+    that.emit('end');
   });
-}
-
-/**
- * Reads lines from a given file path.
- * @param filePath the file path
- * @param bufferSize the buffer size used to read the file
- *   (optional; defaults to 512)
- * @param cb callback that is passed an error description, if any,
- *   and a line or null if the end of the stream is reached;
- *   omit to use as a stream
- */
-function fromPath(filePath, bufferSize, cb) {
-  if (!cb) {
-    cb = bufferSize;
-    bufferSize = 512;
-  }
-  var rs = fs.createReadStream(filePath, {bufferSize: bufferSize});
-  /*jshint validthis: true */
-  fromStream.bind(this, rs, cb)();
-}
-
-function Liner(filePath, bufferSize) {
-  Stream.call(this);
-  fromPath.bind(this, filePath, bufferSize)();
-}
-util.inherits(Liner, Stream);
-
-Liner.fromPath = fromPath;
-Liner.fromStream = fromStream;
+};
 
 module.exports = Liner;
