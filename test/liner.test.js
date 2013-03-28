@@ -12,20 +12,7 @@ function compareLines(t, lines) {
   t.done();
 }
 
-function testFromPath(t) {
-  var lines = [];
-  Liner.fromPath('../story.txt', function (err, line) {
-    if (err) {
-      t.ifError(err);
-    } else if (line === null) {
-      compareLines(t, lines);
-    } else {
-      lines.push(line);
-    }
-  });
-};
-
-function testUsingStream(t) {
+function testIt(t) {
   var lines = [];
   var liner = new Liner('../story.txt');
   liner.on('data', lines.push.bind(lines));
@@ -33,5 +20,4 @@ function testUsingStream(t) {
   liner.on('end', compareLines.bind(null, t, lines));
 };
 
-exports.testFromPath = testFromPath;
-exports.testUsingStream = testUsingStream;
+exports.testIt = testIt;
