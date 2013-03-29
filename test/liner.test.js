@@ -1,5 +1,7 @@
 'use strict';
 var Liner = require('../index.js');
+var stream = require('stream');
+var hasStreams2 = stream.Readable !== undefined;
 
 function compareLines(t, lines) {
   var len = lines.length;
@@ -13,11 +15,21 @@ function compareLines(t, lines) {
 }
 
 function testIt(t) {
-  var lines = [];
-  var liner = new Liner('../story.txt');
-  liner.on('data', lines.push.bind(lines));
+  var lines = [], liner;
+  liner = new Liner('../story.txt');
+
+  if (hasStreams2) {
+    liner.on('readable', function () {
+      lines.push(liner.read());
+    });
+  } else {
+    liner.on('data', function (line) {
+      lines.push(line);
+    });
+  }
+
   liner.on('error', t.ifError);
   liner.on('end', compareLines.bind(null, t, lines));
-};
+}
 
 exports.testIt = testIt;

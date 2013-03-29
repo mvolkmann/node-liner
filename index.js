@@ -1,65 +1,77 @@
 'use strict';
 var fs = require('fs');
 var os = require('os');
-var Stream = require('stream');
+var stream = require('stream');
 var util = require('util');
 
+var hasStreams2 = stream.Readable !== undefined;
+var superclass = hasStreams2 ? stream.Transform : stream;
+
 /**
+ * Constructs a Liner object.
+ * To use with streams2, listen for "readable" events and
+ * call the read method as long is it doesn't return null.
+ * To use with old-style streams, listen for "data" events.
  * @param source a string file path or a stream
+ * @param bufferSize optional; used when source is a file path; defaults to 512
  */
 function Liner(source, bufferSize) {
-  Stream.call(this);
+  // Using objectMode allows empty strings to pushed for blank lines.
+  superclass.call(this, {encoding: 'utf8', objectMode: true});
 
-  if (typeof source === 'string') {
-    this.fromPath(source, bufferSize);
+  var rs = typeof source === 'string' ?
+    fs.createReadStream(source, {bufferSize: bufferSize || 512}) :
+    source;
+
+  if (hasStreams2) {
+    this.leftover = '';
+    rs.pipe(this);
   } else {
-    this.fromStream(source);
+    handleOldStyleStreams(this, rs);
   }
 }
-util.inherits(Liner, Stream);
+util.inherits(Liner, superclass);
 
-/**
- * Reads lines from a given file path.
- * @param filePath the file path
- * @param bufferSize the buffer size used to read the file
- *   (optional; defaults to 512)
- */
-Liner.prototype.fromPath = function (filePath, bufferSize) {
-  bufferSize = bufferSize || 512;
-  var rs = fs.createReadStream(filePath, {bufferSize: bufferSize});
-  this.fromStream(rs);
-};
+if (hasStreams2) { // use new-style streams
+  Liner.prototype._transform = function (chunk, encoding, done) {
+    var lines, that = this;
 
-/**
- * Reads lines from a given ReadStream.
- * @param readStream the ReadStream
- */
-Liner.prototype.fromStream = function (readStream) {
+    lines = chunk.toString().split(os.EOL);
+    this.leftover = lines.pop();
+
+    lines.forEach(function (line) {
+      that.push(line);
+    });
+
+    done();
+  };
+}
+
+function handleOldStyleStreams(liner, rs) {
   var leftover = '';
-  var that = this;
 
-  readStream.on('data', function (buffer) {
+  rs.on('data', function (buffer) {
     var lines = buffer.toString().split(os.EOL);
     lines[0] = leftover + lines[0];
     leftover = lines.pop();
     lines.forEach(function (line) {
-      that.emit('data', line);
+      liner.emit('data', line);
     });
   });
 
-  readStream.on('end', function () {
+  rs.on('end', function () {
     if (leftover.length > 0) {
-      that.emit('data', leftover);
+      liner.emit('data', leftover);
     }
   });
 
-  readStream.on('error', function (err) {
-    that.emit('error', err);
+  rs.on('error', function (err) {
+    liner.emit('error', err);
   });
 
-  readStream.on('close', function (err) {
-    that.emit('end');
+  rs.on('close', function () {
+    liner.emit('end');
   });
-};
+}
 
 module.exports = Liner;
