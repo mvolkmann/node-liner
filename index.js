@@ -33,7 +33,7 @@ function Liner(source, bufferSize) {
 util.inherits(Liner, superclass);
 
 if (hasStreams2) { // use new-style streams
-  Liner.prototype._transform = function (chunk, encoding, done) {
+  Liner.prototype._transform = function (chunk, encoding, cb) {
     var lines, that = this;
 
     lines = chunk.toString().split(os.EOL);
@@ -43,7 +43,7 @@ if (hasStreams2) { // use new-style streams
       that.push(line);
     });
 
-    done();
+    cb();
   };
 }
 
