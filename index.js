@@ -16,12 +16,17 @@ var superclass = hasStreams2 ? stream.Transform : stream;
  * @param bufferSize optional; used when source is a file path; defaults to 512
  */
 function Liner(source, bufferSize) {
+  var rs, that = this;
+
   // Using objectMode allows empty strings to pushed for blank lines.
   superclass.call(this, {encoding: 'utf8', objectMode: true});
 
-  var rs = typeof source === 'string' ?
+  rs = typeof source === 'string' ?
     fs.createReadStream(source, {bufferSize: bufferSize || 512}) :
     source;
+  rs.on('error', function (err) {
+    that.emit('error', err);
+  });
 
   if (hasStreams2) {
     this.leftover = '';
