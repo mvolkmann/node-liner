@@ -42,6 +42,7 @@ if (hasStreams2) { // use new-style streams
     var lines, that = this;
 
     lines = chunk.toString().split(os.EOL);
+    lines[0] = this.leftover + lines[0];
     this.leftover = lines.pop();
 
     lines.forEach(function (line) {
