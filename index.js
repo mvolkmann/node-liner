@@ -41,8 +41,7 @@ if (hasStreams2) { // use new-style streams
   Liner.prototype._transform = function (chunk, encoding, cb) {
     var lines, that = this;
 
-    lines = chunk.toString().split(os.EOL);
-    lines[0] = this.leftover + lines[0];
+    lines = (this.leftover + chunk.toString()).split(os.EOL);
     this.leftover = lines.pop();
 
     lines.forEach(function (line) {
@@ -57,8 +56,7 @@ function handleOldStyleStreams(liner, rs) {
   var leftover = '';
 
   rs.on('data', function (buffer) {
-    var lines = buffer.toString().split(os.EOL);
-    lines[0] = leftover + lines[0];
+    var lines = (leftover + buffer.toString()).split(os.EOL);
     leftover = lines.pop();
     lines.forEach(function (line) {
       liner.emit('data', line);
