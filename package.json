@@ -7,7 +7,9 @@
     "type": "git",
     "url": "git://github.com/mvolkmann/node-liner.git"
   },
-  "scripts":{"test": "cd test; nodeunit liner.test.js"},
+  "scripts":{
+    "test": "cd test; nodeunit liner.test.js"
+  },
   "engines": {
     "node": ">=0.6"
   },
