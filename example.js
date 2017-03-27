@@ -1,13 +1,16 @@
 'use strict';
-var Liner = require('index.js');
+const Liner = require('index.js');
 
-var liner = new Liner('story.txt');
-liner.on('data', function (line) {
-  console.log(line);
+const liner = new Liner('story.txt');
+
+liner.on('readable', () => {
+  while (true) {
+    const line = liner.read();
+    if (line === null) break;
+    console.log(line);
+  }
 });
-liner.on('err', function (err) {
-  console.error(err);
-});
-liner.on('end', function () {
-  process.exit(0);
-});
+
+liner.on('error', err => console.error(err));
+
+liner.on('end', () => process.exit(0));
