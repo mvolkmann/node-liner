@@ -23,3 +23,14 @@ they are more complicated than they need to be.
     liner.on('error', err => console.error(err));
 
     liner.on('end', () => process.exit(0));
+
+### Installing
+
+To install this, run `npm install --save liner`.
+
+While this module is implemented using ES6 features,
+it uses a `prepublish` script to transpile the code to ES5.
+This is done using Babel and happens when the package is installed.
+Rather than installing the `src` directory that is present in this repo,
+it installs a `lib` directory containing a transpiled version of the code.
+The file `.npmignore` is critical in getting this to work properly.
