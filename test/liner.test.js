@@ -1,10 +1,8 @@
 'use strict';
-var Liner = require('../index.js');
-var stream = require('stream');
-var hasStreams2 = stream.Readable !== undefined;
+const Liner = require('../lib/index.js');
 
 function compareLines(t, lines) {
-  var len = lines.length;
+  const len = lines.length;
   t.equal(len, 25, 'number of lines read');
   t.equal(lines[0],
     'Come and listen to a story about a man named Jed',
@@ -15,25 +13,19 @@ function compareLines(t, lines) {
 }
 
 function testIt(t) {
-  var lines = [], liner;
-  liner = new Liner('../story.txt');
+  const lines = [];
+  const liner = new Liner('../story.txt');
 
-  if (hasStreams2) {
-    liner.on('readable', function () {
-      while (true) {
-        var line = liner.read();
-        if (line === null) break;
-        lines.push(line);
-      }
-    });
-  } else {
-    liner.on('data', function (line) {
+  liner.on('readable', () => {
+    while (true) {
+      const line = liner.read();
+      if (line === null) break;
       lines.push(line);
-    });
-  }
+    }
+  });
 
   liner.on('error', t.ifError);
-  liner.on('end', compareLines.bind(null, t, lines));
+  liner.on('end', () => compareLines(t, lines));
 }
 
 exports.testIt = testIt;

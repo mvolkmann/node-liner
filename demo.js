@@ -1,5 +1,5 @@
 'use strict';
-const Liner = require('index.js');
+const Liner = require('lib/index.js');
 
 const liner = new Liner('story.txt');
 
