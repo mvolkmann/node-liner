@@ -15,9 +15,10 @@ class Liner extends stream.Transform {
     // Using objectMode allows empty strings to pushed for blank lines.
     super({encoding: 'utf8', objectMode: true});
 
-    const rs = typeof source === 'string' ?
-      fs.createReadStream(source, {bufferSize: bufferSize || 512}) :
-      source;
+    const rs =
+      typeof source === 'string'
+        ? fs.createReadStream(source, {bufferSize: bufferSize || 512})
+        : source;
     rs.on('error', err => this.emit('error', err));
 
     this.leftover = '';
